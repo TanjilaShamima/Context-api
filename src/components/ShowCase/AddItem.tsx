@@ -15,7 +15,7 @@ const AddItem = () => {
           />
           <button
             onClick={() => {
-              isShowCase(newItem);
+              isShowCase && isShowCase(newItem);
               setNewItem("");
             }}
           >

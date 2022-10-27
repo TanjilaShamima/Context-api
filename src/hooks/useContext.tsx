@@ -1,16 +1,47 @@
-import { createContext, ReactNode, useState } from "react";
-import { initialUserData, UserDataType } from "../App";
+import { createContext, PropsWithChildren, useState } from "react";
 
-let Context = null
+export type UserType = {
+  name: string;
+  email: string;
+  mobile: string;
+  languages: string[];
+};
 
-const {Consumer, Provider} = Context = createContext({} as any)
+export type UserDataType = {
+  user: UserType;
+  isAuthentication: boolean;
+};
 
-interface Props {
-    children: ReactNode | ReactNode[]
-}
+export type UserContext = {
+  userDetails: UserDataType;
+  logIn?: () => void;
+  logOut?: () => void;
+  isShowCase?: (item: string) => void;
+};
 
-const UserProvider: React.FC<Props> = ({children}) => {
-    const [userDetails, setUserDetails] = useState<UserDataType>(initialUserData);
+export const initialUserData: UserDataType = {
+  user: {
+    name: "Tanjila Shamima",
+    email: "tanjilashamima@gmail.com",
+    mobile: "123456789",
+    languages: ["c", "c++", "javascript"],
+  },
+  isAuthentication: true,
+};
+
+const initialContext: UserContext = {
+  userDetails: initialUserData,
+};
+
+let Context: React.Context<UserContext> | null = null;
+
+const { Consumer, Provider } = (Context =
+  createContext<UserContext>(initialContext));
+
+interface UserProviderProps {}
+
+const UserProvider = ({ children }: PropsWithChildren<UserProviderProps>) => {
+  const [userDetails, setUserDetails] = useState<UserDataType>(initialUserData);
 
   const logIn = () => {
     setUserDetails({
@@ -37,18 +68,17 @@ const UserProvider: React.FC<Props> = ({children}) => {
   };
 
   return (
-    <Provider value={{
-        ...userDetails,
+    <Provider
+      value={{
+        userDetails,
         logIn: logIn,
         logOut: logOut,
         isShowCase: isShowCase,
-      }}>
-        {children}
+      }}
+    >
+      {children}
     </Provider>
-  )
+  );
 };
 
-
-
-
-export {UserProvider, Consumer as UserConsumer, Context as UserContext}
+export { UserProvider, Consumer as UserConsumer, Context as UserContext }
